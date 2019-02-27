@@ -148,9 +148,32 @@ where customer_id = (
 		where f.title = "Ali Forever"
 		);
 
+/**
+*Question 10
+*/
+start transaction;
 
-    
+update film
+set original_language_id = (
+							select language_id
+                            from language
+                            where name = "Japanese"
+                            )
+where film_id = (
+				select f.film_id
+					from film f 
+					join film_category fc 
+						on f.film_id = fc.film_id
+					join category c 
+						on fc.category_id = c.category_id
+					where c.name = "Animation"
+                    );
 
+select * from film_category;
+select * from film;
+select * from language;
+desc film;
 
+Rollback;
 
  
