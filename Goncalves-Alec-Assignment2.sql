@@ -116,7 +116,40 @@ rental(rental_date, inventory_id, customer_id, staff_id)
         (select staff_id from staff
 			where first_name = "Jon" and last_name = "Stephens" and store_id = 2)
             );
+insert into
+payment(customer_id, staff_id, rental_id, amount, payment_date)
+	select customer_id, staff_id, rental_id, 2.99, rental_date
+    from rental where last_update = now();
+    
+/** for testing Question 8
+select * from payment
+order by last_update desc;
+select * from rental
+order by last_update desc;
+*/
 Rollback;
+commit;
+
+/**
+*Question 9
+*/
+start transaction;
+
+update rental
+set return_date = now()
+where customer_id = (
+		select customer_id
+		from customer where first_name = "Tracy" and last_name = "Cole"
+        )
+	and inventory_id = (
+		select i.inventory_id 
+        from inventory as i
+			join film as f on f.film_id = i.film_id
+		where f.title = "Ali Forever"
+		);
+
+
+    
 
 
 
