@@ -136,17 +136,16 @@ commit;
 start transaction;
 
 update rental
-set return_date = now()
-where customer_id = (
-		select customer_id
-		from customer where first_name = "Tracy" and last_name = "Cole"
-        )
-	and inventory_id = (
-		select i.inventory_id 
-        from inventory as i
-			join film as f on f.film_id = i.film_id
-		where f.title = "Ali Forever"
-		);
+	join inventory on rental.inventory_id = inventory.inventory_id
+    join film on inventory.film_id = film.film_id
+    join customer on rental.customer_id = customer.customer_id
+	set rental.return_date = now()
+	where customer.first_name = "Tracy" and customer.last_name = "Cole" and film.title = "Ali Forever";
+
+Rollback;
+commit;
+
+-- select * from rental where rental_id = 15294;
 
 /**
 *Question 10
@@ -154,26 +153,20 @@ where customer_id = (
 start transaction;
 
 update film
-set original_language_id = (
+	join film_category fc 
+		on film.film_id = fc.film_id
+	join category c 
+		on fc.category_id = c.category_id
+	set original_language_id = (
 							select language_id
                             from language
                             where name = "Japanese"
                             )
-where film_id = (
-				select f.film_id
-					from film f 
-					join film_category fc 
-						on f.film_id = fc.film_id
-					join category c 
-						on fc.category_id = c.category_id
-					where c.name = "Animation"
-                    );
-
-select * from film_category;
-select * from film;
-select * from language;
-desc film;
+	where c.name = "Animation";
 
 Rollback;
+commit;
+
+-- select * from film;
 
  
